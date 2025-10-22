@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Generation Comparison - Dense vs SVG Attention</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        h1 {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            font-size: 2.5em;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            font-size: 1.1em;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        th {
+            padding: 20px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 1.1em;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        th:first-child {
+            width: 35%;
+        }
+
+        th:nth-child(2), th:nth-child(3) {
+            width: 32.5%;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid #e0e0e0;
+            transition: background-color 0.3s ease;
+        }
+
+        tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        tbody tr:last-child {
+            border-bottom: none;
+        }
+
+        td {
+            padding: 20px;
+            vertical-align: top;
+        }
+
+        .prompt-cell {
+            font-size: 1em;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        .prompt-index {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.85em;
+            margin-right: 10px;
+            margin-bottom: 8px;
+        }
+
+        video {
+            width: 100%;
+            max-width: 500px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            display: block;
+            background: #000;
+        }
+
+        .video-label {
+            font-size: 0.85em;
+            color: #888;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        @media (max-width: 1200px) {
+            table, thead, tbody, th, td, tr {
+                display: block;
+            }
+
+            thead tr {
+                position: absolute;
+                top: -9999px;
+                left: -9999px;
+            }
+
+            tr {
+                margin-bottom: 30px;
+                border: 1px solid #ddd;
+                border-radius: 8px;
+                overflow: hidden;
+            }
+
+            td {
+                border: none;
+                position: relative;
+                padding-left: 50%;
+            }
+
+            td:before {
+                position: absolute;
+                top: 20px;
+                left: 20px;
+                width: 45%;
+                padding-right: 10px;
+                white-space: nowrap;
+                font-weight: 600;
+                color: #667eea;
+            }
+
+            td:nth-of-type(1):before { content: "Prompt"; }
+            td:nth-of-type(2):before { content: "Dense Attention"; }
+            td:nth-of-type(3):before { content: "SVG Attention"; }
+
+            video {
+                max-width: 100%;
+            }
+        }
+
+        .footer {
+            text-align: center;
+            padding: 30px;
+            color: #888;
+            font-size: 0.9em;
+            border-top: 2px solid #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Video Generation Comparison</h1>
+        <div class="subtitle">
+            Comparing Dense Attention vs SVG Attention on PenguinVideoBenchmark
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Prompt</th>
+                    <th>Dense Attention</th>
+                    <th>SVG Attention</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="prompt-cell">
+                        <span class="prompt-index">#0</span>
+                        In the large cage, two puppies were wagging their tails at each other.
+                    </td>
+                    <td>
+                        <video autoplay loop muted playsinline>
+                            <source src="videos/dense/0-0.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </td>
+                    <td>
+                        <video autoplay loop muted playsinline>
+                            <source src="videos/svg/0-0.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="prompt-cell">
+                        <span class="prompt-index">#1</span>
+                        A flock of bats flies over the village, captured in medium long shot.
+                    </td>
+                    <td>
+                        <video autoplay loop muted playsinline>
+                            <source src="videos/dense/1-0.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </td>
+                    <td>
+                        <video autoplay loop muted playsinline>
+                            <source src="videos/svg/1-0.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="prompt-cell">
+                        <span class="prompt-index">#2</span>
+                        Above the sea, a school of silver flying fish leaped out of the water.
+                    </td>
+                    <td>
+                        <video autoplay loop muted playsinline>
+                            <source src="videos/dense/2-0.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </td>
+                    <td>
+                        <video autoplay loop muted playsinline>
+                            <source src="videos/svg/2-0.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="prompt-cell">
+                        <span class="prompt-index">#3</span>
+                        In the early morning park, a bee is collecting pollen on a flower, in anime style.
+                    </td>
+                    <td>
+                        <video autoplay loop muted playsinline>
+                            <source src="videos/dense/3-0.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </td>
+                    <td>
+                        <video autoplay loop muted playsinline>
+                            <source src="videos/svg/3-0.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="prompt-cell">
+                        <span class="prompt-index">#4</span>
+                        Two dolphins are swimming in the blue sea.
+                    </td>
+                    <td>
+                        <video autoplay loop muted playsinline>
+                            <source src="videos/dense/4-0.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </td>
+                    <td>
+                        <video autoplay loop muted playsinline>
+                            <source src="videos/svg/4-0.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="prompt-cell">
+                        <span class="prompt-index">#5</span>
+                        Several ducks are lying in the mud pit, occasionally preening their feathers leisurely, and sometimes probing for food in the muddy water with their beaks.
+                    </td>
+                    <td>
+                        <video autoplay loop muted playsinline>
+                            <source src="videos/dense/5-0.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </td>
+                    <td>
+                        <video autoplay loop muted playsinline>
+                            <source src="videos/svg/5-0.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="prompt-cell">
+                        <span class="prompt-index">#6</span>
+                        Under the azure sky, a polar bear stands in the snow, turning its head to look at its cub behind him.
+                    </td>
+                    <td>
+                        <video autoplay loop muted playsinline>
+                            <source src="videos/dense/6-0.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </td>
+                    <td>
+                        <video autoplay loop muted playsinline>
+                            <source src="videos/svg/6-0.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="prompt-cell">
+                        <span class="prompt-index">#7</span>
+                        A butterfly is fluttering.
+                    </td>
+                    <td>
+                        <video autoplay loop muted playsinline>
+                            <source src="videos/dense/7-0.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </td>
+                    <td>
+                        <video autoplay loop muted playsinline>
+                            <source src="videos/svg/7-0.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="prompt-cell">
+                        <span class="prompt-index">#8</span>
+                        A woodpecker is pecking holes in the tree.The video is presented in a realistic style.
+                    </td>
+                    <td>
+                        <video autoplay loop muted playsinline>
+                            <source src="videos/dense/8-0.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </td>
+                    <td>
+                        <video autoplay loop muted playsinline>
+                            <source src="videos/svg/8-0.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="prompt-cell">
+                        <span class="prompt-index">#9</span>
+                        Several swallows are carrying mud to build nests under the eaves, low angle shot.
+                    </td>
+                    <td>
+                        <video autoplay loop muted playsinline>
+                            <source src="videos/dense/9-0.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </td>
+                    <td>
+                        <video autoplay loop muted playsinline>
+                            <source src="videos/svg/9-0.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="footer">
+            Video comparison using PenguinVideoBenchmark prompts<br>
+            Dense Attention vs SVG Attention (TFP: 0.2, LFP: 0.03, Sparsity: 0.3)
+        </div>
+    </div>
+</body>
+</html>
